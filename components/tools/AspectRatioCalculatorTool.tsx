@@ -1,17 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Calculator, ArrowRight, Sparkles } from "lucide-react";
-import { getAspectRatioString, calculateGCD } from "@/lib/image-processing";
+import { Calculator, ArrowRight } from "lucide-react";
 
 export function AspectRatioCalculatorTool() {
   const [origW, setOrigW] = useState<number>(1920);
   const [origH, setOrigH] = useState<number>(1080);
-
   const [newW, setNewW] = useState<number>(1280);
   const [newH, setNewH] = useState<number>(720);
 
-  const ratioString = getAspectRatioString(origW, origH);
+  const calculateGCD = (a: number, b: number): number => {
+    return b === 0 ? a : calculateGCD(b, a % b);
+  };
+
+  const divisor = calculateGCD(origW, origH) || 1;
+  const ratioString = `${Math.round(origW / divisor)}:${Math.round(origH / divisor)}`;
 
   const handleOrigWChange = (w: number) => {
     setOrigW(w);
@@ -49,24 +52,24 @@ export function AspectRatioCalculatorTool() {
   };
 
   return (
-    <div className="w-full rounded-2xl border border-slate-200 bg-white p-4 shadow-xl sm:p-8">
-      <div className="mb-6 flex items-center justify-between border-b border-slate-100 pb-3">
+    <div className="w-full rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xl sm:p-8 transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900/95 dark:shadow-2xl dark:shadow-black/50">
+      <div className="mb-6 flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800/80">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-950/70 dark:text-brand-400">
             <Calculator className="h-4 w-4" />
           </div>
-          <span className="text-sm font-bold text-slate-800">
-            Aspect Ratio & Proportional Scaler
+          <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+            Aspect Ratio &amp; Proportional Scaler
           </span>
         </div>
-        <span className="rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">
+        <span className="rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-950/70 dark:text-brand-300">
           Ratio: {ratioString}
         </span>
       </div>
 
       {/* Preset Buttons */}
       <div className="mb-6 flex flex-wrap items-center gap-2">
-        <span className="text-xs font-semibold text-slate-600">Standard Presets:</span>
+        <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Standard Presets:</span>
         {[
           { label: "16:9 (Widescreen)", w: 1920, h: 1080 },
           { label: "4:3 (Classic TV)", w: 1600, h: 1200 },
@@ -79,7 +82,7 @@ export function AspectRatioCalculatorTool() {
             key={p.label}
             type="button"
             onClick={() => applyPreset(p.w, p.h)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-brand-400 hover:bg-white hover:text-brand-600"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-brand-400 hover:bg-white hover:text-brand-600 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-brand-400 dark:hover:text-brand-300"
           >
             {p.label}
           </button>
@@ -88,13 +91,13 @@ export function AspectRatioCalculatorTool() {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Step 1: Original dimensions */}
-        <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700">
-            1. Original Base Dimensions (Width × Height)
+        <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 transition-colors dark:border-slate-800 dark:bg-slate-800/40">
+          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            1. Original Base Dimensions (Width &times; Height)
           </h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600">
+              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-400">
                 Width (px):
               </label>
               <input
@@ -102,11 +105,11 @@ export function AspectRatioCalculatorTool() {
                 min={1}
                 value={origW}
                 onChange={(e) => handleOrigWChange(parseInt(e.target.value, 10) || 1)}
-                className="w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm font-semibold text-slate-800 focus:border-brand-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm font-semibold text-slate-800 focus:border-brand-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600">
+              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-400">
                 Height (px):
               </label>
               <input
@@ -114,28 +117,28 @@ export function AspectRatioCalculatorTool() {
                 min={1}
                 value={origH}
                 onChange={(e) => handleOrigHChange(parseInt(e.target.value, 10) || 1)}
-                className="w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm font-semibold text-slate-800 focus:border-brand-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-white p-2.5 text-sm font-semibold text-slate-800 focus:border-brand-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
               />
             </div>
           </div>
 
-          <div className="mt-4 rounded-lg bg-white p-3 border border-slate-200 text-center">
-            <span className="text-xs text-slate-500">Simplified Ratio:</span>
-            <p className="text-xl font-bold text-brand-600">{ratioString}</p>
-            <p className="text-[11px] text-slate-400">
-              GCD: {calculateGCD(origW, origH)} • Factor: {(origW / origH).toFixed(3)}:1
+          <div className="mt-4 rounded-lg bg-white p-3 border border-slate-200 text-center dark:border-slate-700 dark:bg-slate-850/80">
+            <span className="text-xs text-slate-500 dark:text-slate-400">Simplified Ratio:</span>
+            <p className="text-xl font-bold text-brand-600 dark:text-brand-400">{ratioString}</p>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500">
+              GCD: {calculateGCD(origW, origH)} &bull; Factor: {(origW / origH).toFixed(3)}:1
             </p>
           </div>
         </div>
 
         {/* Step 2: Calculate new target */}
-        <div className="rounded-xl border border-brand-200 bg-brand-50/50 p-4">
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-brand-900">
+        <div className="rounded-xl border border-brand-200 bg-brand-50/50 p-4 transition-colors dark:border-brand-900/60 dark:bg-brand-950/30">
+          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-brand-900 dark:text-brand-200">
             2. Scaled Proportional Dimensions
           </h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600">
+              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-400">
                 New Width (px):
               </label>
               <input
@@ -143,11 +146,11 @@ export function AspectRatioCalculatorTool() {
                 min={1}
                 value={newW}
                 onChange={(e) => handleNewWChange(parseInt(e.target.value, 10) || 1)}
-                className="w-full rounded-lg border border-brand-200 bg-white p-2.5 text-sm font-semibold text-slate-800 focus:border-brand-500 focus:outline-none"
+                className="w-full rounded-lg border border-brand-200 bg-white p-2.5 text-sm font-semibold text-slate-800 focus:border-brand-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-600">
+              <label className="mb-1 block text-xs font-semibold text-slate-600 dark:text-slate-400">
                 Calculated Height (px):
               </label>
               <input
@@ -155,14 +158,14 @@ export function AspectRatioCalculatorTool() {
                 min={1}
                 value={newH}
                 onChange={(e) => handleNewHChange(parseInt(e.target.value, 10) || 1)}
-                className="w-full rounded-lg border border-brand-200 bg-white p-2.5 text-sm font-semibold text-slate-800 focus:border-brand-500 focus:outline-none"
+                className="w-full rounded-lg border border-brand-200 bg-white p-2.5 text-sm font-semibold text-slate-800 focus:border-brand-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
               />
             </div>
           </div>
 
           {/* Visual box preview */}
-          <div className="mt-4 flex flex-col items-center justify-center rounded-lg border border-brand-200 bg-white p-4">
-            <span className="text-[11px] font-medium text-slate-400 mb-2">
+          <div className="mt-4 flex flex-col items-center justify-center rounded-lg border border-brand-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-850/80">
+            <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mb-2">
               Visual Aspect Preview
             </span>
             <div
@@ -171,12 +174,12 @@ export function AspectRatioCalculatorTool() {
                 maxHeight: "100px",
                 maxWidth: "180px",
               }}
-              className="flex h-20 w-36 items-center justify-center rounded border-2 border-dashed border-brand-500 bg-brand-50/70 p-2 text-xs font-bold text-brand-700 shadow-inner"
+              className="flex h-20 w-36 items-center justify-center rounded border-2 border-dashed border-brand-500 bg-brand-50/70 p-2 text-xs font-bold text-brand-700 shadow-inner dark:border-brand-400 dark:bg-brand-950/60 dark:text-brand-300"
             >
               {ratioString}
             </div>
-            <p className="mt-2 text-xs font-medium text-slate-600">
-              {newW} × {newH} pixels
+            <p className="mt-2 text-xs font-medium text-slate-600 dark:text-slate-300">
+              {newW} &times; {newH} pixels
             </p>
           </div>
         </div>

@@ -114,20 +114,19 @@ export function ImageResizerTool() {
     }
   };
 
-  const applyScalePercent = (percent: number) => {
-    if (origW > 0 && origH > 0 && file) {
-      const newW = Math.round((origW * percent) / 100);
-      const newH = Math.round((origH * percent) / 100);
-      setWidth(newW);
-      setHeight(newH);
-      runResize(file, newW, newH, selectedFormat, quality);
-    }
+  const applyScalePercent = (pct: number) => {
+    if (origW <= 0 || origH <= 0 || !file) return;
+    const newW = Math.max(1, Math.round((origW * pct) / 100));
+    const newH = Math.max(1, Math.round((origH * pct) / 100));
+    setWidth(newW);
+    setHeight(newH);
+    runResize(file, newW, newH, selectedFormat, quality);
   };
 
-  const handleFormatChange = (fmt: string) => {
-    setSelectedFormat(fmt);
+  const handleFormatChange = (newFmt: string) => {
+    setSelectedFormat(newFmt);
     if (file && width > 0 && height > 0) {
-      runResize(file, width, height, fmt, quality);
+      runResize(file, width, height, newFmt, quality);
     }
   };
 
@@ -135,6 +134,7 @@ export function ImageResizerTool() {
     setFile(null);
     setOriginalUrl(null);
     setResult(null);
+    setErrorMsg(null);
     setOrigW(0);
     setOrigH(0);
     setWidth(0);
@@ -155,14 +155,14 @@ export function ImageResizerTool() {
   };
 
   return (
-    <div className="w-full rounded-2xl border border-slate-200 bg-white p-4 shadow-xl sm:p-8">
+    <div className="w-full rounded-2xl border border-slate-200/90 bg-white p-4 shadow-xl sm:p-8 transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900/95 dark:shadow-2xl dark:shadow-black/50">
       {/* Privacy Guarantee Banner */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-        <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-          <ShieldCheck className="h-4 w-4 text-emerald-600" />
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3 dark:border-slate-800/80">
+        <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+          <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
           <span>Pure Browser Resizing • Zero Uploads</span>
         </div>
-        <span className="text-xs text-slate-400">
+        <span className="text-xs text-slate-400 dark:text-slate-500">
           High-performance canvas interpolation in local memory
         </span>
       </div>
@@ -182,8 +182,8 @@ export function ImageResizerTool() {
           onClick={() => fileInputRef.current?.click()}
           className={`group flex min-h-[260px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center transition-all ${
             isDragging
-              ? "border-brand-500 bg-brand-50/70"
-              : "border-slate-300 bg-slate-50/60 hover:border-brand-400 hover:bg-slate-50"
+              ? "border-brand-500 bg-brand-50/70 dark:bg-brand-950/40"
+              : "border-slate-300 bg-slate-50/60 hover:border-brand-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800/30 dark:hover:border-brand-400 dark:hover:bg-slate-800/60"
           }`}
         >
           <input
@@ -193,31 +193,31 @@ export function ImageResizerTool() {
             accept="image/*"
             className="hidden"
           />
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-md ring-1 ring-slate-200 transition-transform group-hover:scale-110">
-            <Maximize2 className="h-8 w-8 text-brand-600" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-md ring-1 ring-slate-200 transition-transform group-hover:scale-110 dark:bg-slate-800 dark:ring-slate-700">
+            <Maximize2 className="h-8 w-8 text-brand-600 dark:text-brand-400" />
           </div>
-          <p className="mt-4 text-base font-semibold text-slate-800 sm:text-lg">
+          <p className="mt-4 text-base font-semibold text-slate-800 dark:text-slate-100 sm:text-lg">
             Choose an image to resize, or{" "}
-            <span className="text-brand-600 underline decoration-brand-300 underline-offset-4">
+            <span className="text-brand-600 underline decoration-brand-300 underline-offset-4 dark:text-brand-400 dark:decoration-brand-700">
               browse files
             </span>
           </p>
-          <p className="mt-1.5 text-xs text-slate-500 sm:text-sm">
+          <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">
             Adjust pixel width, height, aspect ratios, or scale by percentage
           </p>
         </div>
       ) : (
         <div className="space-y-6">
           {/* Dimension Controls */}
-          <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-3">
+          <div className="rounded-xl border border-slate-200/90 bg-slate-50/80 p-4 transition-colors dark:border-slate-800 dark:bg-slate-800/40">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-3 dark:border-slate-700/80">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Original Dimensions:
                 </span>
-                <p className="text-sm font-bold text-slate-800">
+                <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
                   {origW} × {origH} px{" "}
-                  <span className="text-xs font-normal text-slate-500">
+                  <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
                     ({formatBytes(file.size)})
                   </span>
                 </p>
@@ -225,7 +225,7 @@ export function ImageResizerTool() {
               <button
                 type="button"
                 onClick={reset}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-red-600"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-red-600 transition dark:text-slate-400 dark:hover:text-red-400"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
                 Change Image
@@ -236,7 +236,7 @@ export function ImageResizerTool() {
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
               {/* Width */}
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Width (Pixels):
                 </label>
                 <input
@@ -245,7 +245,7 @@ export function ImageResizerTool() {
                   max={20000}
                   value={width}
                   onChange={(e) => handleWidthChange(parseInt(e.target.value, 10) || 1)}
-                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 focus:border-brand-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm focus:border-brand-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                 />
               </div>
 
@@ -256,8 +256,8 @@ export function ImageResizerTool() {
                   onClick={() => setLockAspect(!lockAspect)}
                   className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition ${
                     lockAspect
-                      ? "border-brand-300 bg-brand-50 text-brand-700"
-                      : "border-slate-200 bg-white text-slate-600 hover:bg-slate-100"
+                      ? "border-brand-300 bg-brand-50 text-brand-700 dark:border-brand-800 dark:bg-brand-950/60 dark:text-brand-300"
+                      : "border-slate-200 bg-white text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                   }`}
                 >
                   {lockAspect ? (
@@ -276,7 +276,7 @@ export function ImageResizerTool() {
 
               {/* Height */}
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Height (Pixels):
                 </label>
                 <input
@@ -285,31 +285,31 @@ export function ImageResizerTool() {
                   max={20000}
                   value={height}
                   onChange={(e) => handleHeightChange(parseInt(e.target.value, 10) || 1)}
-                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 focus:border-brand-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm focus:border-brand-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-brand-400"
                 />
               </div>
             </div>
 
             {/* Quick Percentage Presets */}
-            <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200">
-              <span className="text-xs font-semibold text-slate-600">Quick Scale:</span>
+            <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200 dark:border-slate-700/80">
+              <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Quick Scale:</span>
               {[25, 50, 75, 100].map((pct) => (
                 <button
                   key={pct}
                   type="button"
                   onClick={() => applyScalePercent(pct)}
-                  className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-brand-400 hover:text-brand-600"
+                  className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-brand-400 hover:text-brand-600 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-brand-400 dark:hover:text-brand-300"
                 >
                   {pct}%
                 </button>
               ))}
 
               <div className="ml-auto flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-600">Format:</span>
+                <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Format:</span>
                 <select
                   value={selectedFormat}
                   onChange={(e) => handleFormatChange(e.target.value)}
-                  className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-800 focus:outline-none"
+                  className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-800 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                 >
                   <option value="image/jpeg">JPG / JPEG</option>
                   <option value="image/png">PNG</option>
@@ -321,8 +321,8 @@ export function ImageResizerTool() {
 
           {/* Error notice */}
           {errorMsg && (
-            <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-800">
-              <AlertCircle className="h-4 w-4 text-red-600" />
+            <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300">
+              <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
               <span>{errorMsg}</span>
             </div>
           )}
@@ -331,48 +331,48 @@ export function ImageResizerTool() {
           {result && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-center">
-                  <span className="text-[11px] font-medium text-slate-500">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-center dark:border-slate-800 dark:bg-slate-800/50">
+                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
                     Original Size
                   </span>
-                  <p className="text-base font-bold text-slate-800">
+                  <p className="text-base font-bold text-slate-800 dark:text-slate-100">
                     {formatBytes(result.originalSize)}
                   </p>
-                  <p className="text-[10px] text-slate-400">
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500">
                     {origW} × {origH} px
                   </p>
                 </div>
-                <div className="rounded-xl border border-brand-200 bg-brand-50 p-3 text-center">
-                  <span className="text-[11px] font-medium text-brand-700">
+                <div className="rounded-xl border border-brand-200 bg-brand-50 p-3 text-center dark:border-brand-900/60 dark:bg-brand-950/40">
+                  <span className="text-[11px] font-medium text-brand-700 dark:text-brand-300">
                     Resized Size
                   </span>
-                  <p className="text-base font-bold text-brand-700">
+                  <p className="text-base font-bold text-brand-700 dark:text-brand-300">
                     {formatBytes(result.outputSize)}
                   </p>
-                  <p className="text-[10px] text-brand-600">
+                  <p className="text-[10px] text-brand-600 dark:text-brand-400">
                     {result.outputWidth} × {result.outputHeight} px
                   </p>
                 </div>
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-center">
-                  <span className="text-[11px] font-medium text-emerald-700">
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-center dark:border-emerald-900/60 dark:bg-emerald-950/40">
+                  <span className="text-[11px] font-medium text-emerald-700 dark:text-emerald-300">
                     Resolution Change
                   </span>
-                  <p className="text-base font-bold text-emerald-700">
+                  <p className="text-base font-bold text-emerald-700 dark:text-emerald-300">
                     {Math.round(((result.outputWidth * result.outputHeight) / (origW * origH)) * 100)}%
                   </p>
-                  <p className="text-[10px] text-emerald-600">of original pixels</p>
+                  <p className="text-[10px] text-emerald-600 dark:text-emerald-400">of original pixels</p>
                 </div>
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-center">
-                  <span className="text-[11px] font-medium text-slate-500">Format</span>
-                  <p className="text-base font-bold text-slate-800">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-center dark:border-slate-800 dark:bg-slate-800/50">
+                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Format</span>
+                  <p className="text-base font-bold text-slate-800 dark:text-slate-100">
                     {result.format.replace("image/", "").toUpperCase()}
                   </p>
-                  <p className="text-[10px] text-slate-400">High Quality Render</p>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500">High Quality Render</p>
                 </div>
               </div>
 
               {/* Resized Image Preview */}
-              <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-900/5 p-4">
+              <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-900/5 p-4 dark:border-slate-800 dark:bg-black/30">
                 <img
                   src={result.url}
                   alt="Resized Output"
@@ -385,7 +385,7 @@ export function ImageResizerTool() {
                 <a
                   href={result.url}
                   download={getDownloadFilename()}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand-500/30 transition hover:bg-brand-700 active:scale-[0.99] sm:w-auto"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand-500/30 transition hover:from-brand-500 hover:to-indigo-500 active:scale-[0.99] sm:w-auto"
                 >
                   <FileDown className="h-5 w-5" />
                   Download Resized Image ({width} × {height} px)
@@ -393,7 +393,7 @@ export function ImageResizerTool() {
                 <button
                   type="button"
                   onClick={reset}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 sm:w-auto"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 sm:w-auto"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Resize Another Image

@@ -14,7 +14,7 @@ export const SITE_CONFIG = {
     "Free, private, browser-based image compression and optimization tools. Compress JPG, PNG, and WebP images to exact sizes (50KB, 100KB, 200KB, 500KB), resize dimensions, and convert formats with zero server uploads.",
   privacyStatement:
     "All image processing is executed entirely in your browser using modern client-side Canvas APIs. Your photos never touch a remote server, ensuring complete data privacy and security.",
-  contactEmail: "support@snapreduce.com",
+  contactEmail: "worldofwordshub@gmail.com",
   socialLinks: {
     github: "https://github.com",
     twitter: "https://twitter.com",
