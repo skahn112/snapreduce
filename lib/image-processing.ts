@@ -41,6 +41,47 @@ export interface ConversionResult {
   originalFormat: string;
 }
 
+export interface CropBox {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  width?: number;
+  height?: number;
+  isPercentage?: boolean;
+}
+
+export interface CropResult {
+  blob: Blob;
+  url: string;
+  width: number;
+  height: number;
+  size: number;
+}
+
+/**
+ * Get standard file extension from MIME type
+ */
+export function getFormatExtension(mimeType: string): string {
+  switch (mimeType) {
+    case "image/png":
+      return "png";
+    case "image/webp":
+      return "webp";
+    case "image/jpeg":
+    case "image/jpg":
+      return "jpg";
+    case "image/heic":
+      return "heic";
+    case "image/gif":
+      return "gif";
+    case "image/svg+xml":
+      return "svg";
+    default:
+      return mimeType.split("/")[1] || "jpg";
+  }
+}
+
 /**
  * Format raw bytes into human-readable strings (e.g. "98.7 KB", "2.4 MB")
  */
@@ -447,23 +488,39 @@ export async function convertImageFormat(
 }
 
 /**
- * Crop image based on pixel bounding box
+ * Crop image based on pixel bounding box or percentage crop box
  */
 export async function cropImage(
   file: File,
-  cropArea: { x: number; y: number; width: number; height: number },
+  cropArea: CropBox | { x: number; y: number; width: number; height: number },
   options: {
     format?: string;
     quality?: number;
   } = {}
-): Promise<{ blob: Blob; url: string; width: number; height: number; size: number }> {
+): Promise<CropResult> {
   const img = await loadImageFromFile(file);
   const format = options.format || file.type || "image/jpeg";
   const quality = (options.quality ?? 95) / 100;
 
+  const naturalW = img.naturalWidth || img.width;
+  const naturalH = img.naturalHeight || img.height;
+
+  const rawW = "w" in cropArea && cropArea.w !== undefined ? cropArea.w : (cropArea as any).width ?? naturalW;
+  const rawH = "h" in cropArea && cropArea.h !== undefined ? cropArea.h : (cropArea as any).height ?? naturalH;
+
+  const isPercent =
+    ("isPercentage" in cropArea && cropArea.isPercentage !== undefined)
+      ? cropArea.isPercentage
+      : ("w" in cropArea || (cropArea.x <= 100 && cropArea.y <= 100 && rawW <= 100 && rawH <= 100));
+
+  const pixelX = isPercent ? (cropArea.x / 100) * naturalW : cropArea.x;
+  const pixelY = isPercent ? (cropArea.y / 100) * naturalH : cropArea.y;
+  const pixelW = Math.max(1, Math.round(isPercent ? (rawW / 100) * naturalW : rawW));
+  const pixelH = Math.max(1, Math.round(isPercent ? (rawH / 100) * naturalH : rawH));
+
   const canvas = document.createElement("canvas");
-  canvas.width = Math.max(1, Math.round(cropArea.width));
-  canvas.height = Math.max(1, Math.round(cropArea.height));
+  canvas.width = pixelW;
+  canvas.height = pixelH;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Could not create canvas context.");
 
@@ -474,10 +531,10 @@ export async function cropImage(
 
   ctx.drawImage(
     img,
-    cropArea.x,
-    cropArea.y,
-    cropArea.width,
-    cropArea.height,
+    pixelX,
+    pixelY,
+    pixelW,
+    pixelH,
     0,
     0,
     canvas.width,

@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, MouseEvent as ReactMouseEvent } from "react";
+import { useState, useRef, useEffect, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent } from "react";
 import {
-  UploadCloud,
   FileDown,
   RefreshCw,
   Crop,
@@ -10,12 +9,6 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { cropImage, formatBytes, CropBox, CropResult } from "@/lib/image-processing";
-
-interface PresetItem {
-  id: string;
-  label: string;
-  aspect?: number; // width / height
-}
 
 export function ImageCropperTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -34,9 +27,62 @@ export function ImageCropperTool() {
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Clean up object URLs to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (imgSrc) URL.revokeObjectURL(imgSrc);
+      if (cropResult?.url) URL.revokeObjectURL(cropResult.url);
+    };
+  }, [imgSrc, cropResult]);
+
+  const getPresetAspect = (id: string): number | null => {
+    switch (id) {
+      case "1:1":
+        return 1;
+      case "4:3":
+        return 4 / 3;
+      case "16:9":
+        return 16 / 9;
+      case "passport":
+        return 35 / 45; // ~0.778
+      default:
+        return null;
+    }
+  };
+
+  const calculateCropBoxForAspect = (targetAspect: number | null): CropBox => {
+    if (!targetAspect || !imageRef.current) {
+      return { x: 10, y: 10, w: 80, h: 80 };
+    }
+    const img = imageRef.current;
+    const imgW = img.naturalWidth || img.width || 1;
+    const imgH = img.naturalHeight || img.height || 1;
+    const imgAspect = imgW / imgH;
+
+    if (imgAspect >= targetAspect) {
+      // Image is wider than target aspect: anchor height at 80%
+      const h = 80;
+      const w = Math.min(96, Math.max(10, 80 * (targetAspect / imgAspect)));
+      const x = Math.max(0, (100 - w) / 2);
+      const y = (100 - h) / 2;
+      return { x, y, w, h };
+    } else {
+      // Image is taller than target aspect: anchor width at 80%
+      const w = 80;
+      const h = Math.min(96, Math.max(10, 80 * (imgAspect / targetAspect)));
+      const x = (100 - w) / 2;
+      const y = Math.max(0, (100 - h) / 2);
+      return { x, y, w, h };
+    }
+  };
+
   const handleFile = (f: File) => {
+    if (imgSrc) URL.revokeObjectURL(imgSrc);
+    if (cropResult?.url) URL.revokeObjectURL(cropResult.url);
+
     setFile(f);
     setCropResult(null);
+    setPreset("free");
     const url = URL.createObjectURL(f);
     setImgSrc(url);
     setCropBox({ x: 10, y: 10, w: 80, h: 80 });
@@ -44,18 +90,138 @@ export function ImageCropperTool() {
 
   const handlePresetSelect = (id: string) => {
     setPreset(id);
-    if (id === "1:1") {
-      setCropBox({ x: 15, y: 15, w: 70, h: 70 });
-    } else if (id === "4:3") {
-      setCropBox({ x: 10, y: 15, w: 80, h: 60 });
-    } else if (id === "16:9") {
-      setCropBox({ x: 5, y: 25, w: 90, h: 50 });
-    } else if (id === "passport") {
-      // 35x45 ratio = ~0.777 width / height
-      setCropBox({ x: 25, y: 10, w: 50, h: 65 });
-    } else {
-      setCropBox({ x: 10, y: 10, w: 80, h: 80 });
+    const aspect = getPresetAspect(id);
+    setCropBox(calculateCropBoxForAspect(aspect));
+  };
+
+  const onImageLoad = () => {
+    if (preset !== "free") {
+      const aspect = getPresetAspect(preset);
+      setCropBox(calculateCropBoxForAspect(aspect));
     }
+  };
+
+  const startDrag = (
+    e: ReactMouseEvent | ReactTouchEvent,
+    type: "move" | "nw" | "ne" | "sw" | "se"
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+
+    const startX = clientX;
+    const startY = clientY;
+    const startBox = { ...cropBox };
+
+    const wrapper = imageRef.current?.parentElement;
+    if (!wrapper) return;
+    const rect = wrapper.getBoundingClientRect();
+
+    const onPointerMove = (moveEv: MouseEvent | TouchEvent) => {
+      const currentX = "touches" in moveEv ? moveEv.touches[0].clientX : moveEv.clientX;
+      const currentY = "touches" in moveEv ? moveEv.touches[0].clientY : moveEv.clientY;
+
+      const deltaXPercent = ((currentX - startX) / rect.width) * 100;
+      const deltaYPercent = ((currentY - startY) / rect.height) * 100;
+
+      if (type === "move") {
+        const nextX = Math.max(0, Math.min(100 - startBox.w, startBox.x + deltaXPercent));
+        const nextY = Math.max(0, Math.min(100 - startBox.h, startBox.y + deltaYPercent));
+        setCropBox((prev) => ({ ...prev, x: nextX, y: nextY }));
+      } else {
+        const currentTargetAspect = getPresetAspect(preset);
+        const imgW = imageRef.current?.naturalWidth || rect.width;
+        const imgH = imageRef.current?.naturalHeight || rect.height;
+        const imgAspect = imgW / imgH;
+
+        let nextX = startBox.x;
+        let nextY = startBox.y;
+        let nextW = startBox.w;
+        let nextH = startBox.h;
+
+        if (type === "se") {
+          nextW = Math.max(8, Math.min(100 - startBox.x, startBox.w + deltaXPercent));
+          if (currentTargetAspect) {
+            nextH = nextW * (imgAspect / currentTargetAspect);
+            if (nextY + nextH > 100) {
+              nextH = 100 - nextY;
+              nextW = nextH * (currentTargetAspect / imgAspect);
+            }
+          } else {
+            nextH = Math.max(8, Math.min(100 - startBox.y, startBox.h + deltaYPercent));
+          }
+        } else if (type === "sw") {
+          const maxLeftShift = startBox.x;
+          const shift = Math.min(maxLeftShift, Math.max(-startBox.w + 8, -deltaXPercent));
+          nextX = startBox.x - shift;
+          nextW = startBox.w + shift;
+          if (currentTargetAspect) {
+            nextH = nextW * (imgAspect / currentTargetAspect);
+            if (nextY + nextH > 100) {
+              nextH = 100 - nextY;
+              nextW = nextH * (currentTargetAspect / imgAspect);
+              nextX = startBox.x + startBox.w - nextW;
+            }
+          } else {
+            nextH = Math.max(8, Math.min(100 - startBox.y, startBox.h + deltaYPercent));
+          }
+        } else if (type === "ne") {
+          nextW = Math.max(8, Math.min(100 - startBox.x, startBox.w + deltaXPercent));
+          if (currentTargetAspect) {
+            nextH = nextW * (imgAspect / currentTargetAspect);
+            nextY = startBox.y + startBox.h - nextH;
+            if (nextY < 0) {
+              nextY = 0;
+              nextH = startBox.y + startBox.h;
+              nextW = nextH * (currentTargetAspect / imgAspect);
+            }
+          } else {
+            const shiftY = Math.min(startBox.y, Math.max(-startBox.h + 8, -deltaYPercent));
+            nextY = startBox.y - shiftY;
+            nextH = startBox.h + shiftY;
+          }
+        } else if (type === "nw") {
+          const shiftX = Math.min(startBox.x, Math.max(-startBox.w + 8, -deltaXPercent));
+          nextX = startBox.x - shiftX;
+          nextW = startBox.w + shiftX;
+          if (currentTargetAspect) {
+            nextH = nextW * (imgAspect / currentTargetAspect);
+            nextY = startBox.y + startBox.h - nextH;
+            if (nextY < 0) {
+              nextY = 0;
+              nextH = startBox.y + startBox.h;
+              nextW = nextH * (currentTargetAspect / imgAspect);
+              nextX = startBox.x + startBox.w - nextW;
+            }
+          } else {
+            const shiftY = Math.min(startBox.y, Math.max(-startBox.h + 8, -deltaYPercent));
+            nextY = startBox.y - shiftY;
+            nextH = startBox.h + shiftY;
+          }
+        }
+
+        setCropBox({
+          x: Math.max(0, Math.min(100, nextX)),
+          y: Math.max(0, Math.min(100, nextY)),
+          w: Math.max(5, Math.min(100, nextW)),
+          h: Math.max(5, Math.min(100, nextH)),
+        });
+      }
+    };
+
+    const onPointerUp = () => {
+      window.removeEventListener("mousemove", onPointerMove);
+      window.removeEventListener("mouseup", onPointerUp);
+      window.removeEventListener("touchmove", onPointerMove);
+      window.removeEventListener("touchend", onPointerUp);
+    };
+
+    window.addEventListener("mousemove", onPointerMove);
+    window.addEventListener("mouseup", onPointerUp);
+    window.addEventListener("touchmove", onPointerMove);
+    window.addEventListener("touchend", onPointerUp);
   };
 
   const applyCrop = async () => {
@@ -72,9 +238,12 @@ export function ImageCropperTool() {
   };
 
   const reset = () => {
+    if (imgSrc) URL.revokeObjectURL(imgSrc);
+    if (cropResult?.url) URL.revokeObjectURL(cropResult.url);
     setFile(null);
     setImgSrc(null);
     setCropResult(null);
+    setPreset("free");
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -178,28 +347,54 @@ export function ImageCropperTool() {
             className="relative flex items-center justify-center overflow-hidden rounded-xl border border-slate-300 bg-slate-900/10 p-4 dark:border-slate-800 dark:bg-black/40"
           >
             {imgSrc && (
-              <div className="relative inline-block select-none">
+              <div className="relative inline-block select-none touch-none">
                 <img
                   ref={imageRef}
                   src={imgSrc}
                   alt="Crop Source"
-                  className="max-h-[420px] w-auto rounded object-contain shadow-sm"
+                  onLoad={onImageLoad}
+                  className="max-h-[420px] w-auto rounded object-contain shadow-sm pointer-events-none"
                 />
 
                 {/* Crop Box Overlay */}
                 <div
+                  onMouseDown={(e) => startDrag(e, "move")}
+                  onTouchStart={(e) => startDrag(e, "move")}
                   style={{
                     left: `${cropBox.x}%`,
                     top: `${cropBox.y}%`,
                     width: `${cropBox.w}%`,
                     height: `${cropBox.h}%`,
                   }}
-                  className="absolute border-2 border-brand-500 bg-brand-500/10 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] cursor-move"
+                  className="absolute border-2 border-brand-500 bg-brand-500/10 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] cursor-move select-none touch-none"
                 >
-                  <div className="absolute left-1 top-1 rounded bg-brand-600 px-1 py-0.5 text-[9px] font-semibold text-white shadow">
+                  <div className="absolute left-1 top-1 rounded bg-brand-600 px-1 py-0.5 text-[9px] font-semibold text-white shadow pointer-events-none">
                     Crop Region
                   </div>
-                  {/* Grid lines */}
+
+                  {/* Corner Resize Handles */}
+                  <div
+                    onMouseDown={(e) => startDrag(e, "nw")}
+                    onTouchStart={(e) => startDrag(e, "nw")}
+                    className="absolute -left-1.5 -top-1.5 h-3.5 w-3.5 rounded-sm border-2 border-brand-600 bg-white shadow cursor-nwse-resize dark:bg-slate-900"
+                  />
+                  <div
+                    onMouseDown={(e) => startDrag(e, "ne")}
+                    onTouchStart={(e) => startDrag(e, "ne")}
+                    className="absolute -right-1.5 -top-1.5 h-3.5 w-3.5 rounded-sm border-2 border-brand-600 bg-white shadow cursor-nesw-resize dark:bg-slate-900"
+                  />
+                  <div
+                    onMouseDown={(e) => startDrag(e, "sw")}
+                    onTouchStart={(e) => startDrag(e, "sw")}
+                    className="absolute -left-1.5 -bottom-1.5 h-3.5 w-3.5 rounded-sm border-2 border-brand-600 bg-white shadow cursor-nesw-resize dark:bg-slate-900"
+                  />
+                  <div
+                    onMouseDown={(e) => startDrag(e, "se")}
+                    onTouchStart={(e) => startDrag(e, "se")}
+                    className="absolute -right-1.5 -bottom-1.5 h-3.5 w-3.5 rounded-sm border-2 border-brand-600 bg-white shadow cursor-nwse-resize dark:bg-slate-900"
+                  />
+
+                  {/* Rule of Thirds Grid lines */}
                   <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none">
                     <div className="border-r border-b border-white/40" />
                     <div className="border-r border-b border-white/40" />

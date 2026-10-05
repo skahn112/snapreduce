@@ -20,15 +20,21 @@ import {
 
 interface ImageConverterToolProps {
   initialOutputFormat?: string;
+  targetMimeType?: string;
+  headline?: string;
   sourceFormatHint?: string; // "WebP", "PNG", "HEIC", etc.
 }
 
 export function ImageConverterTool({
   initialOutputFormat = "image/jpeg",
+  targetMimeType,
+  headline,
   sourceFormatHint,
 }: ImageConverterToolProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [outputFormat, setOutputFormat] = useState<string>(initialOutputFormat);
+  const [outputFormat, setOutputFormat] = useState<string>(
+    targetMimeType || initialOutputFormat
+  );
   const [quality, setQuality] = useState<number>(92);
   const [bgColor, setBgColor] = useState<string>("#ffffff");
 
