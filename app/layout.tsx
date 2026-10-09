@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { SITE_CONFIG } from "@/data/site-config";
 import { JsonLd } from "@/components/JsonLd";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -104,10 +105,24 @@ export default function RootLayout({
           }}
         />
         <JsonLd data={websiteSchema} />
+        <meta name="google-site-verification" content="Zjq4np6RsitJgujln58mD8OhTd9TZG6fQn-ryYqhiTM" />
       </head>
       <body
         className={`${inter.className} min-h-screen flex flex-col antialiased bg-slate-50 text-slate-900 dark:bg-[#0a0f1d] dark:text-slate-100 selection:bg-brand-500 selection:text-white`}
       >
+
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-WCMBW8Q33G"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){window.dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-WCMBW8Q33G');
+          `}
+        </Script>
         <Navbar />
         <div className="flex-1">{children}</div>
         <Footer />
