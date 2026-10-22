@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: SITE_CONFIG.baseUrl,
+    url: `${SITE_CONFIG.baseUrl}/`,
     siteName: SITE_CONFIG.name,
     title: SITE_CONFIG.title,
     description: SITE_CONFIG.description,
@@ -77,7 +77,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_CONFIG.name,
-    url: SITE_CONFIG.baseUrl,
+    url: `${SITE_CONFIG.baseUrl}/`,
     description: SITE_CONFIG.description,
     potentialAction: {
       "@type": "SearchAction",

@@ -26,7 +26,15 @@ export const metadata: Metadata = {
   description:
     "Free online image compressor, resizer, and converter. Reduce image file size to 100KB, 200KB, or 500KB. Compress photos, resize images, and convert JPG, PNG, WebP, and HEIC with 100% private browser-based processing.",
   alternates: {
-    canonical: SITE_CONFIG.baseUrl,
+    canonical: `${SITE_CONFIG.baseUrl}/`,
+  },
+  openGraph: {
+    title: "SnapReduce – Free Online Image Compression, Resizing & Conversion Tools",
+    description:
+      "Free online image compressor, resizer, and converter. Reduce image file size to 100KB, 200KB, or 500KB. Compress photos, resize images, and convert JPG, PNG, WebP, and HEIC with 100% private browser-based processing.",
+    url: `${SITE_CONFIG.baseUrl}/`,
+    siteName: SITE_CONFIG.name,
+    type: "website",
   },
 };
 

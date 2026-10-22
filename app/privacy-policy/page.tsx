@@ -10,6 +10,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${SITE_CONFIG.baseUrl}/privacy-policy/`,
   },
+  openGraph: {
+    title: "Privacy Policy – SnapReduce",
+    description:
+      "SnapReduce Privacy Policy. Understand our client-side image processing architecture, cookie usage, analytics, and advertising disclosure.",
+    url: `${SITE_CONFIG.baseUrl}/privacy-policy/`,
+    siteName: SITE_CONFIG.name,
+    type: "website",
+  },
 };
 
 export default function PrivacyPolicyPage() {

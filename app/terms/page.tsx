@@ -9,6 +9,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${SITE_CONFIG.baseUrl}/terms/`,
   },
+  openGraph: {
+    title: "Terms of Service – SnapReduce",
+    description:
+      "SnapReduce Terms of Service. Understand terms of use, intellectual property, disclaimer of warranties, and permitted use of our image utilities.",
+    url: `${SITE_CONFIG.baseUrl}/terms/`,
+    siteName: SITE_CONFIG.name,
+    type: "website",
+  },
 };
 
 export default function TermsPage() {

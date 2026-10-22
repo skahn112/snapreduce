@@ -11,6 +11,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${SITE_CONFIG.baseUrl}/about/`,
   },
+  openGraph: {
+    title: "About SnapReduce – Private Browser-Based Image Tools",
+    description:
+      "Learn about SnapReduce's mission to provide fast, completely private, client-side image compression, resizing, and format conversion utilities.",
+    url: `${SITE_CONFIG.baseUrl}/about/`,
+    siteName: SITE_CONFIG.name,
+    type: "website",
+  },
 };
 
 export default function AboutPage() {

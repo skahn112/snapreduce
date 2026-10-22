@@ -10,6 +10,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: `${SITE_CONFIG.baseUrl}/disclaimer/`,
   },
+  openGraph: {
+    title: "Disclaimer – SnapReduce",
+    description:
+      "SnapReduce Disclaimer. Clarification regarding target file size approximations, browser execution limits, and government portal compliance.",
+    url: `${SITE_CONFIG.baseUrl}/disclaimer/`,
+    siteName: SITE_CONFIG.name,
+    type: "website",
+  },
 };
 
 export default function DisclaimerPage() {
