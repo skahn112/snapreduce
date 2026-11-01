@@ -314,11 +314,6 @@ export function Navbar() {
               FAQ
             </Link>
 
-            {/* Dark Mode Switch in Mobile Menu */}
-            <div className="pt-2">
-              <ThemeToggle variant="button" />
-            </div>
-
             {/* CTA in Mobile Menu */}
             <div className="pt-2">
               <Link
