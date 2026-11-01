@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Search,
@@ -17,6 +17,16 @@ import { AdSlot } from "@/components/AdSlot";
 export function ToolsDirectoryClient() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const query = params.get("q");
+      if (query) {
+        setSearchTerm(query);
+      }
+    }
+  }, []);
 
   const categories = [
     { id: "all", label: "All Tools" },

@@ -3,14 +3,14 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SITE_CONFIG } from "@/data/site-config";
 
 export const metadata: Metadata = {
-  title: "Terms of Service – SnapReduce",
+  title: "Terms of Service",
   description:
     "SnapReduce Terms of Service. Understand terms of use, intellectual property, disclaimer of warranties, and permitted use of our image utilities.",
   alternates: {
     canonical: `${SITE_CONFIG.baseUrl}/terms/`,
   },
   openGraph: {
-    title: "Terms of Service – SnapReduce",
+    title: "Terms of Service",
     description:
       "SnapReduce Terms of Service. Understand terms of use, intellectual property, disclaimer of warranties, and permitted use of our image utilities.",
     url: `${SITE_CONFIG.baseUrl}/terms/`,

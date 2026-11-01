@@ -5,14 +5,14 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SITE_CONFIG } from "@/data/site-config";
 
 export const metadata: Metadata = {
-  title: "About SnapReduce – Private Browser-Based Image Tools",
+  title: "About Us – Private Browser-Based Image Tools",
   description:
     "Learn about SnapReduce's mission to provide fast, completely private, client-side image compression, resizing, and format conversion utilities.",
   alternates: {
     canonical: `${SITE_CONFIG.baseUrl}/about/`,
   },
   openGraph: {
-    title: "About SnapReduce – Private Browser-Based Image Tools",
+    title: "About Us – Private Browser-Based Image Tools",
     description:
       "Learn about SnapReduce's mission to provide fast, completely private, client-side image compression, resizing, and format conversion utilities.",
     url: `${SITE_CONFIG.baseUrl}/about/`,

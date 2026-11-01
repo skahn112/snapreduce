@@ -38,6 +38,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
 
   const url = `${SITE_CONFIG.baseUrl}/blog/${article.slug}/`;
 
+  const ogImageUrl = `${SITE_CONFIG.baseUrl}/og-image.png`;
+
   return {
     title: article.seoTitle,
     description: article.metaDescription,
@@ -53,11 +55,20 @@ export function generateMetadata({ params }: PageProps): Metadata {
       publishedTime: article.publishDate,
       modifiedTime: article.updateDate,
       authors: [article.author],
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: article.seoTitle,
       description: article.metaDescription,
+      images: [ogImageUrl],
     },
   };
 }
@@ -74,6 +85,7 @@ export default function ArticlePage({ params }: PageProps) {
     "@type": "Article",
     headline: article.title,
     description: article.metaDescription,
+    image: `${SITE_CONFIG.baseUrl}/og-image.png`,
     author: {
       "@type": "Organization",
       name: article.author,

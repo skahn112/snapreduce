@@ -4,14 +4,14 @@ import { SITE_CONFIG } from "@/data/site-config";
 import { ShieldCheck, Lock, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy – SnapReduce",
+  title: "Privacy Policy",
   description:
     "SnapReduce Privacy Policy. Understand our client-side image processing architecture, cookie usage, analytics, and advertising disclosure.",
   alternates: {
     canonical: `${SITE_CONFIG.baseUrl}/privacy-policy/`,
   },
   openGraph: {
-    title: "Privacy Policy – SnapReduce",
+    title: "Privacy Policy",
     description:
       "SnapReduce Privacy Policy. Understand our client-side image processing architecture, cookie usage, analytics, and advertising disclosure.",
     url: `${SITE_CONFIG.baseUrl}/privacy-policy/`,

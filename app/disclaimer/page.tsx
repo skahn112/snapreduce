@@ -4,14 +4,14 @@ import { SITE_CONFIG } from "@/data/site-config";
 import { AlertCircle } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Disclaimer – SnapReduce",
+  title: "Disclaimer",
   description:
     "SnapReduce Disclaimer. Clarification regarding target file size approximations, browser execution limits, and government portal compliance.",
   alternates: {
     canonical: `${SITE_CONFIG.baseUrl}/disclaimer/`,
   },
   openGraph: {
-    title: "Disclaimer – SnapReduce",
+    title: "Disclaimer",
     description:
       "SnapReduce Disclaimer. Clarification regarding target file size approximations, browser execution limits, and government portal compliance.",
     url: `${SITE_CONFIG.baseUrl}/disclaimer/`,

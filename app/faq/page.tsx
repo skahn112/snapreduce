@@ -3,14 +3,14 @@ import { FaqClient } from "@/components/FaqClient";
 import { SITE_CONFIG } from "@/data/site-config";
 
 export const metadata: Metadata = {
-  title: "Frequently Asked Questions – SnapReduce",
+  title: "Frequently Asked Questions",
   description:
     "Got questions about image compression, file formats, exact sizes (50KB, 100KB, 200KB), or browser privacy? Find direct, expert answers.",
   alternates: {
     canonical: `${SITE_CONFIG.baseUrl}/faq/`,
   },
   openGraph: {
-    title: "Frequently Asked Questions – SnapReduce",
+    title: "Frequently Asked Questions",
     description:
       "Got questions about image compression, file formats, exact sizes, or browser privacy? Find direct, expert answers.",
     url: `${SITE_CONFIG.baseUrl}/faq/`,
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Frequently Asked Questions – SnapReduce",
+    title: "Frequently Asked Questions",
     description:
       "Got questions about image compression, file formats, exact sizes, or browser privacy?",
   },

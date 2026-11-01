@@ -21,6 +21,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
   const tool = TOOLS.find((t) => t.slug === params.slug);
   if (!tool) return {};
 
+  const ogImageUrl = `${SITE_CONFIG.baseUrl}/og-image.png`;
+
   return {
     title: tool.seoTitle,
     description: tool.metaDescription,
@@ -33,11 +35,20 @@ export function generateMetadata({ params }: PageProps): Metadata {
       url: `${SITE_CONFIG.baseUrl}${tool.path}`,
       siteName: SITE_CONFIG.name,
       type: "website",
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: tool.h1,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: tool.seoTitle,
       description: tool.metaDescription,
+      images: [ogImageUrl],
     },
   };
 }
