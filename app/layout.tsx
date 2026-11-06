@@ -19,10 +19,19 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_CONFIG.baseUrl),
   title: {
-    default: "SnapReduce – Free Online Image Compression & Resizing Tools",
+    default: "SnapReduce – Free Image Compressor & Photo Resizer",
     template: "%s | SnapReduce",
   },
   description: SITE_CONFIG.description,
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+  },
   keywords: [
     "image compressor",
     "image resizer",
@@ -88,11 +97,22 @@ export default function RootLayout({
     name: SITE_CONFIG.name,
     url: `${SITE_CONFIG.baseUrl}/`,
     description: SITE_CONFIG.description,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${SITE_CONFIG.baseUrl}/tools/?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
+  };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_CONFIG.name,
+    url: `${SITE_CONFIG.baseUrl}/`,
+    logo: `${SITE_CONFIG.baseUrl}/icon.svg`,
+    description: SITE_CONFIG.description,
+    knowsAbout: [
+      "Image Compression",
+      "Client-Side Privacy Optimization",
+      "JPEG Quantization",
+      "Exact File Size Matching",
+      "WebP and HEIC Conversion",
+    ],
   };
 
   return (
@@ -114,6 +134,7 @@ export default function RootLayout({
           }}
         />
         <JsonLd data={websiteSchema} />
+        <JsonLd data={organizationSchema} />
         <meta name="google-site-verification" content="Zjq4np6RsitJgujln58mD8OhTd9TZG6fQn-ryYqhiTM" />
       </head>
       <body

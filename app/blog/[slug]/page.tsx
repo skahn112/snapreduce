@@ -40,14 +40,22 @@ export function generateMetadata({ params }: PageProps): Metadata {
 
   const ogImageUrl = `${SITE_CONFIG.baseUrl}/og-image.png`;
 
+  const title = article.seoTitle.includes("SnapReduce")
+    ? article.seoTitle
+    : article.seoTitle.length <= 46
+    ? `${article.seoTitle} | SnapReduce`
+    : article.seoTitle;
+
   return {
-    title: article.seoTitle,
+    title: {
+      absolute: title,
+    },
     description: article.metaDescription,
     alternates: {
       canonical: url,
     },
     openGraph: {
-      title: article.seoTitle,
+      title,
       description: article.metaDescription,
       url,
       siteName: SITE_CONFIG.name,

@@ -39,26 +39,35 @@ export function ContactClient() {
     setIsSubmitting(true);
     setSubmissionNotice(null);
 
+    const accessKey =
+      process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
+      "cfb5a186-188d-4462-814d-60d32c39b6a1";
+
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, category, message }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `[SnapReduce Inquiry - ${category}] from ${name}`,
+          from_name: name,
+          name: name,
+          email: email,
+          category: category,
+          message: message,
+        }),
       });
 
       const data = await res.json();
 
       if (res.ok && data.success) {
         setSubmitted(true);
-        if (data.method === "logged") {
-          setSubmissionNotice(
-            "Your message was recorded! You can also click below to open your email client for immediate direct transmission."
-          );
-        } else {
-          setSubmissionNotice(
-            `Your inquiry has been sent directly to ${SITE_CONFIG.contactEmail}. We will review and reply to ${email} as soon as possible.`
-          );
-        }
+        setSubmissionNotice(
+          `Your inquiry has been sent directly to ${SITE_CONFIG.contactEmail}. We will review and reply to ${email} as soon as possible.`
+        );
       } else {
         // Fallback to mailto
         launchMailto();

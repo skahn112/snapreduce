@@ -1678,7 +1678,7 @@ export const ARTICLES: ArticleItem[] = [
           "Rarely for photographs, because PNG does not discard imperceptible color variations.",
       },
     ],
-    relatedToolSlugs: ["png-to-jpg", "jpg-to-png", "webp-vs-jpg"],
+    relatedToolSlugs: ["png-to-jpg", "jpg-to-png", "webp-to-jpg"],
     relatedArticleSlugs: ["webp-vs-jpg", "jpg-vs-jpeg-whats-the-difference"],
   },
 

@@ -185,7 +185,7 @@ export function Navbar() {
                   >
                     <span className="flex items-center gap-1.5">
                       <Layers className="h-3.5 w-3.5" />
-                      Browse All 16 Tools
+                      Browse All 29 Tools
                     </span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
@@ -276,7 +276,7 @@ export function Navbar() {
                 <Layers className="h-4 w-4 text-brand-600 dark:text-brand-400" />
                 All Image Tools
               </span>
-              <span className="text-xs font-semibold text-slate-400">16 Tools</span>
+              <span className="text-xs font-semibold text-slate-400">29 Tools</span>
             </Link>
 
             <Link

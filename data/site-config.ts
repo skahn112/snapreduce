@@ -9,9 +9,9 @@ export const SITE_CONFIG = {
   name: "SnapReduce",
   domain: "snapreduce.pages.dev",
   baseUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://snapreduce.pages.dev",
-  title: "SnapReduce – Free Online Image Compression, Resizing & Format Tools",
+  title: "SnapReduce – Free Image Compressor & Photo Resizer Online",
   description:
-    "Free, private, browser-based image compression and optimization tools. Compress JPG, PNG, and WebP images to exact sizes (50KB, 100KB, 200KB, 500KB), resize dimensions, and convert formats with zero server uploads.",
+    "Reduce image file size to 100KB, 200KB or 500KB instantly. 100% free, private in-browser compression for JPG, PNG, WebP with zero server uploads.",
   privacyStatement:
     "All image processing is executed entirely in your browser using modern client-side Canvas APIs. Your photos never touch a remote server, ensuring complete data privacy and security.",
   contactEmail: "worldofwordshub@gmail.com",

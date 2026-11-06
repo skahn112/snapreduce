@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Sparkles,
   Zap,
+  X,
 } from "lucide-react";
 import { ARTICLES, ArticleItem } from "@/data/articles";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
@@ -31,11 +32,16 @@ export function BlogHubClient() {
     "Tutorials",
   ];
 
+  const trimmedQuery = searchTerm.trim().toLowerCase();
+
   const filteredArticles = ARTICLES.filter((art) => {
     const matchesSearch =
-      art.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      art.metaDescription.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      art.category.toLowerCase().includes(searchTerm.toLowerCase());
+      !trimmedQuery ||
+      art.title.toLowerCase().includes(trimmedQuery) ||
+      art.seoTitle.toLowerCase().includes(trimmedQuery) ||
+      art.metaDescription.toLowerCase().includes(trimmedQuery) ||
+      art.intro.toLowerCase().includes(trimmedQuery) ||
+      art.category.toLowerCase().includes(trimmedQuery);
 
     const matchesCategory =
       selectedCategory === "all" || art.category === selectedCategory;
@@ -65,17 +71,31 @@ export function BlogHubClient() {
             </p>
           </div>
 
-          {/* Search Bar */}
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400 dark:text-slate-500" />
+          {/* Search Bar - Professional & Sleek */}
+          <div className="mt-8 flex flex-col gap-4">
+            <div className="group relative w-full">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400 transition-colors group-focus-within:text-brand-600 dark:text-slate-500 dark:group-focus-within:text-brand-400 pointer-events-none" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search articles (e.g. 100KB, JPEG, DPI, WebP, Android)..."
-                className="w-full rounded-2xl border border-slate-200/90 bg-white pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 shadow-sm focus:border-brand-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-brand-400"
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setSearchTerm("");
+                }}
+                placeholder="Search guides by keyword (e.g. 100KB, JPEG, DPI, WebP, Android, passport)..."
+                className="w-full rounded-xl border border-slate-200/90 bg-white pl-10 sm:pl-11 pr-10 py-3 sm:py-3.5 text-sm sm:text-base text-slate-900 placeholder-slate-400 shadow-sm transition-all hover:border-slate-300 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/10 dark:border-slate-700/80 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:hover:border-slate-600 dark:focus:border-brand-400 dark:focus:ring-brand-400/15"
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
+                  title="Clear search (Esc)"
+                  aria-label="Clear search"
+                >
+                  <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                </button>
+              )}
             </div>
 
             {/* Category Pills */}
@@ -85,10 +105,10 @@ export function BlogHubClient() {
                   key={cat}
                   type="button"
                   onClick={() => setSelectedCategory(cat)}
-                  className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold capitalize transition ${
+                  className={`rounded-xl px-3.5 py-1.5 text-xs sm:text-sm font-semibold capitalize transition ${
                     selectedCategory === cat
                       ? "bg-brand-600 text-white shadow-sm shadow-brand-500/25 dark:bg-brand-500"
-                      : "bg-white text-slate-700 border border-slate-200/90 hover:border-brand-400 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:border-brand-500"
+                      : "bg-white text-slate-700 border border-slate-200/90 hover:border-brand-400 hover:text-brand-600 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:border-brand-500 dark:hover:text-white"
                   }`}
                 >
                   {cat === "all" ? "All Topics" : cat}
@@ -156,45 +176,71 @@ export function BlogHubClient() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredArticles.map((art) => (
-            <article
-              key={art.slug}
-              className="group flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-brand-500/60 hover:shadow-xl hover:shadow-brand-500/10 dark:border-slate-800 dark:bg-slate-900/70 dark:hover:border-brand-500/50 dark:hover:shadow-brand-500/5"
-            >
-              <div>
-                <div className="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
-                  <span className="rounded-md bg-brand-50 px-2 py-0.5 font-bold text-brand-700 dark:bg-brand-950/70 dark:text-brand-300">
-                    {art.category}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    {art.readTime}
-                  </span>
+        {filteredArticles.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-12 text-center my-6 shadow-sm">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-950/70 dark:text-brand-400 mb-4">
+              <Search className="h-6 w-6" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+              No guides found matching &quot;{searchTerm}&quot;
+            </h3>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+              We couldn&apos;t find any articles for your search query. Try keywords like <strong className="text-slate-700 dark:text-slate-200">100KB, JPEG, WebP, PNG, or DPI</strong>.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedCategory("all");
+                }}
+                className="rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-brand-700 dark:bg-brand-500 transition-colors"
+              >
+                Clear All Filters
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredArticles.map((art) => (
+              <article
+                key={art.slug}
+                className="group flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-brand-500/60 hover:shadow-xl hover:shadow-brand-500/10 dark:border-slate-800 dark:bg-slate-900/70 dark:hover:border-brand-500/50 dark:hover:shadow-brand-500/5"
+              >
+                <div>
+                  <div className="flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
+                    <span className="rounded-md bg-brand-50 px-2 py-0.5 font-bold text-brand-700 dark:bg-brand-950/70 dark:text-brand-300">
+                      {art.category}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {art.readTime}
+                    </span>
+                  </div>
+
+                  <h2 className="mt-3 text-base font-bold text-slate-900 transition-colors group-hover:text-brand-600 dark:text-slate-100 dark:group-hover:text-brand-400">
+                    <Link href={`/blog/${art.slug}/`}>{art.title}</Link>
+                  </h2>
+
+                  <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400 line-clamp-3">
+                    {art.metaDescription}
+                  </p>
                 </div>
 
-                <h2 className="mt-3 text-base font-bold text-slate-900 transition-colors group-hover:text-brand-600 dark:text-slate-100 dark:group-hover:text-brand-400">
-                  <Link href={`/blog/${art.slug}/`}>{art.title}</Link>
-                </h2>
-
-                <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400 line-clamp-3">
-                  {art.metaDescription}
-                </p>
-              </div>
-
-              <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-3 text-xs dark:border-slate-800">
-                <span className="text-slate-400 dark:text-slate-500">{art.publishDate}</span>
-                <Link
-                  href={`/blog/${art.slug}/`}
-                  className="flex items-center gap-1 font-semibold text-brand-600 hover:underline dark:text-brand-400"
-                >
-                  <span>Read Guide</span>
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
+                <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-3 text-xs dark:border-slate-800">
+                  <span className="text-slate-400 dark:text-slate-500">{art.publishDate}</span>
+                  <Link
+                    href={`/blog/${art.slug}/`}
+                    className="flex items-center gap-1 font-semibold text-brand-600 hover:underline dark:text-brand-400"
+                  >
+                    <span>Read Guide</span>
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
 
         {/* Ad slot */}
         <AdSlot type="in-content" className="mx-auto" />

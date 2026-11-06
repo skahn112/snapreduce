@@ -22,16 +22,18 @@ import { TOOLS } from "@/data/tools";
 import { ARTICLES } from "@/data/articles";
 
 export const metadata: Metadata = {
-  title: "SnapReduce – Free Online Image Compression, Resizing & Conversion Tools",
+  title: {
+    absolute: "SnapReduce – Free Image Compressor & Photo Resizer Online",
+  },
   description:
-    "Free online image compressor, resizer, and converter. Reduce image file size to 100KB, 200KB, or 500KB. Compress photos, resize images, and convert JPG, PNG, WebP, and HEIC with 100% private browser-based processing.",
+    "Reduce image file size to 100KB, 200KB or 500KB instantly. 100% free, private browser compression for JPG, PNG, WebP with zero quality loss and no upload.",
   alternates: {
     canonical: `${SITE_CONFIG.baseUrl}/`,
   },
   openGraph: {
-    title: "SnapReduce – Free Online Image Compression, Resizing & Conversion Tools",
+    title: "SnapReduce – Free Image Compressor & Photo Resizer Online",
     description:
-      "Free online image compressor, resizer, and converter. Reduce image file size to 100KB, 200KB, or 500KB. Compress photos, resize images, and convert JPG, PNG, WebP, and HEIC with 100% private browser-based processing.",
+      "Reduce image file size to 100KB, 200KB or 500KB instantly. 100% free, private browser compression for JPG, PNG, WebP with zero quality loss and no upload.",
     url: `${SITE_CONFIG.baseUrl}/`,
     siteName: SITE_CONFIG.name,
     type: "website",

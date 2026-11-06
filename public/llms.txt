@@ -1,0 +1,56 @@
+# SnapReduce (https://snapreduce.pages.dev)
+> Free, private, client-side browser image compression, resizing, format conversion, and dimension calculator tools.
+
+SnapReduce executes 100% of image processing client-side within the user's web browser using modern HTML5 Canvas, Web Worker, and WebAssembly APIs. Photos and documents never touch a remote server, ensuring complete data sovereignty, privacy, and confidentiality for government forms, identity cards, signatures, and personal photographs.
+
+## Core Capabilities & Architecture
+- **Exact Target File Size Compression**: Calibrated binary search quantization targeting 50KB, 100KB, 200KB, and 500KB thresholds without distortion.
+- **Client-Side Privacy (Zero Server Uploads)**: Images are loaded into browser memory and manipulated via Canvas 2D contexts. No telemetry, no cloud storage, no server transmission.
+- **Multi-Format Conversion**: Instant conversion between JPG, JPEG, PNG, WebP, and Apple HEIC image formats.
+- **Precision Dimension Resizing & Aspect Ratio**: Pixel width and height adjustment, percentage scaling, aspect ratio preservation, and DPI calculations.
+- **Offline Capable & Fast**: Zero network latency during processing; works instantly on mobile devices and desktops.
+
+## Primary Tools & Endpoints
+
+### Exact Size Target Tools
+- [Compress JPG to 100KB](https://snapreduce.pages.dev/compress-jpg-to-100kb/): ✓ Compress JPG images to exact 100KB or less online for free. Guaranteed portal compliance for job applications, exam forms, and visa uploads without blur.
+- [Compress JPG to 200KB](https://snapreduce.pages.dev/compress-jpg-to-200kb/): ✓ Compress JPG photos to 200KB or less online. Perfect for passport, visa, and exam portal uploads with zero blur, no sign-up, and 100% privacy.
+- [Compress JPG to 500KB](https://snapreduce.pages.dev/compress-jpg-to-500kb/): ✓ Compress large JPG pictures to 500KB or less online. Preserve maximum sharpness for photography, real estate, and portfolio uploads. 100% free.
+- [Compress Image to 100KB](https://snapreduce.pages.dev/compress-image-to-100kb/): ✓ Compress any image (JPG, PNG, WebP) to exact 100KB online for free. Instant preview, no watermarks, no account required, and zero quality loss.
+- [Compress Image to 200KB](https://snapreduce.pages.dev/compress-image-to-200kb/): ✓ Compress any photo to 200KB online for free. Side-by-side live preview, exact size target, and zero blur. Perfect for job portals and official forms.
+- [Compress Image to 500KB](https://snapreduce.pages.dev/compress-image-to-500kb/): ✓ Reduce image file size to 500KB online for free. Maintain razor-sharp clarity for blog banners, web design, and email attachments. 100% private.
+- [Resize Image to 50KB](https://snapreduce.pages.dev/resize-image-to-50kb/): ✓ Resize and compress images to 50KB online. Tailored for strict portal requirements, digital signatures, student ID cards, and government uploads.
+- [Resize Image to 100KB](https://snapreduce.pages.dev/resize-image-to-100kb/): ✓ Resize and reduce image file size to 100KB online for free. Perfect balance of dimensions and clarity for seamless job application uploads.
+- [Resize Image to 200KB](https://snapreduce.pages.dev/resize-image-to-200kb/): ✓ Resize image dimensions and compress file size to 200KB online. Fast, secure, and accurate client-side processing for official portals and forms.
+- [Compress PNG to 100KB](https://snapreduce.pages.dev/compress-png-to-100kb/): ✓ Compress PNG images to 100KB online for free. Preserve crisp graphic edges and transparent backgrounds with smart in-browser optimization.
+- [Reduce Image Size to 100KB](https://snapreduce.pages.dev/reduce-image-size-to-100kb/): ✓ Reduce image file size to 100KB online for free. Simple, instant, and private tool to shrink photos for job portals, government forms, and email.
+- [Reduce Image Size to 200KB](https://snapreduce.pages.dev/reduce-image-size-to-200kb/): ✓ Reduce photo and image size to 200KB online for free. Clean compression with zero server uploads, no watermark, and instant high-quality download.
+- [Compress Passport Photo to 100KB](https://snapreduce.pages.dev/compress-passport-photo-to-100kb/): ✓ Compress passport and visa photos to 100KB online. Guaranteed acceptance for official government forms, passport renewals, and visa portals.
+
+### General Compression & Resizing Tools
+- [Image Compressor](https://snapreduce.pages.dev/tools/image-compressor/): ✓ Free online image compressor for JPG, PNG, and WebP. Smart target size reduction with zero quality loss and no server uploads. 100% private in browser.
+- [JPG Compressor](https://snapreduce.pages.dev/tools/jpg-compressor/): ✓ Compress JPG & JPEG photos online for free. Reduce file size to exact KB targets with zero blur or quality loss. 100% private in-browser compression.
+- [PNG Compressor](https://snapreduce.pages.dev/tools/png-compressor/): ✓ Compress PNG images online while keeping transparent backgrounds and razor-sharp text. Fast, free, browser-based optimization with no watermarks.
+- [Image Resizer](https://snapreduce.pages.dev/tools/image-resizer/): ✓ Resize image width and height online for free. Lock aspect ratios, scale by percentage, and change DPI without distortion. Instant preview & download.
+- [Image Size Converter](https://snapreduce.pages.dev/tools/image-size-converter/): ✓ Convert image file size in KB, MB, and pixel dimensions simultaneously. Accurate, instant client-side processing with zero server uploads or sign-up.
+- [Photo Size Reducer](https://snapreduce.pages.dev/tools/photo-size-reducer/): ✓ Shrink camera and mobile phone photos online for free. Perfect for email, WhatsApp, and form uploads with no quality loss. 100% private & instant.
+- [Crop Image Online](https://snapreduce.pages.dev/tools/image-cropper/): ✓ Crop images online for free. Includes presets for square (1:1), 4:3, 16:9, and passport photos. Fast, intuitive canvas tool with instant HD download.
+
+### Format Conversion Tools
+- [Convert JPG to PNG](https://snapreduce.pages.dev/tools/jpg-to-png/): ✓ Convert JPG and JPEG photos to high-definition PNG format online for free. Crisp rendering, lossless conversion, and zero server uploads in your browser.
+- [Convert PNG to JPG](https://snapreduce.pages.dev/tools/png-to-jpg/): ✓ Convert PNG graphics and transparent images to JPG format online for free. Automatic clean white background, fast compression, and zero file uploads.
+- [Convert JPG to WebP](https://snapreduce.pages.dev/tools/jpg-to-webp/): ✓ Convert JPG images to modern lightweight WebP format online. Shrink image weight by up to 35% without losing sharpness. Boost website speed instantly.
+- [Convert WebP to JPG](https://snapreduce.pages.dev/tools/webp-to-jpg/): ✓ Convert downloaded WebP images to standard JPG format online. Works on all phones, PCs, and software. Free, instant, and 100% private in your browser.
+- [Convert HEIC to JPG](https://snapreduce.pages.dev/tools/heic-to-jpg/): ✓ Convert Apple iPhone & iPad HEIC photos to standard JPG format online. Batch ready, ultra-fast, and 100% private with zero cloud uploads or limits.
+- [Convert HEIC to PNG](https://snapreduce.pages.dev/tools/heic-to-png/): ✓ Convert iPhone HEIC photos into high-definition PNG format online for free. Preserves crisp colors and transparency with private client-side processing.
+
+### Image Calculators
+- [Aspect Ratio Calculator](https://snapreduce.pages.dev/tools/aspect-ratio-calculator/): ✓ Calculate aspect ratios (16:9, 4:3, 1:1, 21:9) and scale proportional width and height dimensions instantly. Free, precise calculator for web and video.
+- [Image Dimensions Calculator](https://snapreduce.pages.dev/tools/image-dimensions-calculator/): ✓ Calculate total pixels, megapixels, aspect ratios, and physical print dimensions at 72, 150, and 300 DPI. Free image resolution and size calculator.
+- [Image DPI Calculator](https://snapreduce.pages.dev/tools/image-dpi-calculator/): ✓ Calculate DPI, PPI, pixel resolution, and print sizes in inches or cm. Ensure your photos meet exact high-resolution printing and passport standards.
+
+## Site Directory & Knowledge Hub
+- [All Tools Directory](https://snapreduce.pages.dev/tools/): Complete directory of all 29 image processing utilities.
+- [Guides & Blog Hub](https://snapreduce.pages.dev/blog/): 28 in-depth technical tutorials on image compression, formats, and optimization.
+- [Frequently Asked Questions](https://snapreduce.pages.dev/faq/): Technical answers about privacy, quantization, and compression mechanisms.
+- [About SnapReduce](https://snapreduce.pages.dev/about/): Architecture and mission behind client-side privacy-first image tooling.
